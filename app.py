@@ -67,7 +67,7 @@ def auth():
 
 @app.get("/")
 def index():
-    return send_from_directory(WEB, "index.html")
+    return send_from_directory(BASE, "index.html")
 
 @app.post("/api/register")
 def register():
