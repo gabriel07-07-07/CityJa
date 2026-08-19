@@ -74,7 +74,7 @@ nav button{background:none;border:0;color:#8090a5;font-size:10px}nav button b{di
 <nav>
 <button class="on" onclick="go('home',this)"><b>⌂</b>Início</button>
 <button onclick="go('explore',this)"><b>⌕</b>Explorar</button>
-<button onclick="openAuth('register')"><b>＋</b>Cadastro</button>
+<button onclick="merchantPanel ()><b>＋</b>Cadastro</button>
 <button onclick="go('events',this)"><b>☆</b>Eventos</button>
 <button onclick="go('profile',this)"><b>♙</b>Perfil</button>
 </nav>
@@ -159,6 +159,47 @@ async function logout(){
  localStorage.removeItem('cityja_token');token=null;$('pname').textContent='Visitante';$('pemail').textContent='';$('prole').textContent='';$('profileAuth').style.display='block';$('logoutBtn').style.display='none';toast('Você saiu da conta')
 }
 (async()=>{try{let j=await api('/api/me');updateProfile(j.user)}catch(e){}load()})();
+ function merchantPanel(){
+  if(!token){
+    openAuth('login');
+    return;
+  }
+
+  const role = document.getElementById('prole').textContent;
+  if(!role.includes('Comerciante')){
+    alert('Entre com uma conta de comerciante para cadastrar um estabelecimento.');
+    return;
+  }
+
+  const nome = prompt('Nome do estabelecimento:');
+  if(!nome) return;
+
+  const categoria = prompt('Categoria (ex.: Restaurante, Bar, Café):');
+  if(!categoria) return;
+
+  const cidade = prompt('Cidade:');
+  if(!cidade) return;
+
+  const endereco = prompt('Endereço:') || '';
+  const descricao = prompt('Descrição do estabelecimento:') || '';
+
+  api('/api/businesses',{
+    method:'POST',
+    body:JSON.stringify({
+      name:nome,
+      category:categoria,
+      city:cidade,
+      address:endereco,
+      description:descricao
+    })
+  }).then(()=>{
+    alert('Estabelecimento cadastrado com sucesso! 🎉');
+    load();
+    go('explore');
+  }).catch(e=>{
+    alert(e.message);
+  });
+}
 </script>
 </body>
 </html>
