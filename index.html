@@ -200,6 +200,184 @@ async function logout(){
     alert(e.message);
   });
 }
-</script>
+function merchantPanel(){
+  if(!token){
+    openAuth('login');
+    return;
+  }
+
+  const role = document.getElementById('prole')?.textContent || '';
+
+  if(!role.includes('Comerciante')){
+    alert('Entre com uma conta de comerciante para acessar este painel.');
+    return;
+  }
+
+  const menu = `
+    <div style="padding:20px">
+      <div class="title">
+        <h2>🏪 Painel do Comerciante</h2>
+      </div>
+
+      <div class="cards">
+
+        <button class="card" onclick="merchantRegister()">
+          <h3>🏪 Cadastrar loja</h3>
+          <p class="muted">Cadastre seu estabelecimento no CityJá.</p>
+        </button>
+
+        <button class="card" onclick="merchantEdit()">
+          <h3>✏️ Editar loja</h3>
+          <p class="muted">Altere informações do seu estabelecimento.</p>
+        </button>
+
+        <button class="card" onclick="merchantPhotos()">
+          <h3>📸 Fotos</h3>
+          <p class="muted">Adicione fotos para apresentar sua loja.</p>
+        </button>
+
+        <button class="card" onclick="merchantContact()">
+          <h3>💬 WhatsApp e contato</h3>
+          <p class="muted">Configure telefone, WhatsApp e redes sociais.</p>
+        </button>
+
+        <button class="card" onclick="merchantHours()">
+          <h3>🕐 Horário de funcionamento</h3>
+          <p class="muted">Informe quando sua loja está aberta.</p>
+        </button>
+
+        <button class="card" onclick="merchantPreview()">
+          <h3>👁️ Visualizar loja</h3>
+          <p class="muted">Veja como sua loja aparece para os usuários.</p>
+        </button>
+
+      </div>
+    </div>
+  `;
+
+  const old = document.getElementById('merchantMenu');
+  if(old) old.remove();
+
+  const div = document.createElement('section');
+  div.id = 'merchantMenu';
+  div.className = 'screen on';
+  div.innerHTML = menu;
+
+  document.querySelector('main')?.appendChild(div);
+  go('merchantMenu');
+} function merchantRegister(){
+  const form = `
+    <div style="padding:20px">
+      <button class="btn secondary" onclick="merchantPanel()">← Voltar</button>
+
+      <div class="title">
+        <h2>🏪 Cadastrar minha loja</h2>
+      </div>
+
+      <div class="form">
+
+        <label>Nome da loja *</label>
+        <input id="m_name" placeholder="Ex.: Sabor da Vitória">
+
+        <label>Categoria *</label>
+        <select id="m_category">
+          <option value="">Selecione</option>
+          <option>Restaurante</option>
+          <option>Bar</option>
+          <option>Café</option>
+          <option>Hotel</option>
+          <option>Comércio</option>
+          <option>Serviços</option>
+          <option>Salão de beleza</option>
+          <option>Pet shop</option>
+          <option>Outro</option>
+        </select>
+
+        <label>Descrição</label>
+        <textarea id="m_description" rows="4"
+          placeholder="Conte um pouco sobre sua loja..."></textarea>
+
+        <label>📍 Endereço</label>
+        <input id="m_address" placeholder="Rua, número, bairro">
+
+        <label>Cidade *</label>
+        <input id="m_city" placeholder="Ex.: Vitória">
+
+        <label>📞 Telefone</label>
+        <input id="m_phone" placeholder="(27) 99999-9999">
+
+        <label>💬 WhatsApp</label>
+        <input id="m_whatsapp" placeholder="(27) 99999-9999">
+
+        <label>🌐 Instagram ou site</label>
+        <input id="m_website" placeholder="https://instagram.com/sualoja">
+
+        <label>🕐 Horário de funcionamento</label>
+        <textarea id="m_hours" rows="3"
+          placeholder="Segunda a sexta: 08:00 às 18:00&#10;Sábado: 08:00 às 14:00"></textarea>
+
+        <label>💰 Faixa de preço</label>
+        <select id="m_price">
+          <option value="">Selecione</option>
+          <option>$ — Econômico</option>
+          <option>$$ — Médio</option>
+          <option>$$$ — Mais caro</option>
+          <option>$$$$ — Premium</option>
+        </select>
+
+        <button class="btn primary"
+          style="width:100%;margin-top:18px"
+          onclick="saveMerchant()">
+          🚀 Cadastrar loja
+        </button>
+
+      </div>
+    </div>
+  `;
+
+  let old=document.getElementById('merchantForm');
+  if(old) old.remove();
+
+  const div=document.createElement('section');
+  div.id='merchantForm';
+  div.className='screen on';
+  div.innerHTML=form;
+
+  document.querySelector('main')?.appendChild(div);
+  go('merchantForm');
+}
+
+async function saveMerchant(){
+  const name=document.getElementById('m_name').value.trim();
+  const category=document.getElementById('m_category').value;
+  const city=document.getElementById('m_city').value.trim();
+
+  if(!name || !category || !city){
+    alert('Preencha Nome, Categoria e Cidade.');
+    return;
+  }
+
+  try{
+    await api('/api/businesses',{
+      method:'POST',
+      body:JSON.stringify({
+        name:name,
+        category:category,
+        city:city,
+        address:document.getElementById('m_address').value.trim(),
+        description:document.getElementById('m_description').value.trim(),
+        phone:document.getElementById('m_phone').value.trim(),
+        website:document.getElementById('m_website').value.trim()
+      })
+    });
+
+    alert('🎉 Loja cadastrada com sucesso!');
+    await load();
+    go('explore');
+
+  }catch(e){
+    alert(e.message || 'Não foi possível cadastrar a loja.');
+  }
+} </script>
 </body>
 </html>
