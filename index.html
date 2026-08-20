@@ -106,7 +106,12 @@ async function merchantPanel(){
         go('profile');
         return;
     }
-}.');go('profile');return}
+    }catch(e){
+        toast('Não foi possível verificar sua conta.');
+        go('profile');
+        return;
+    }
+ $('merchantContent').innerHTML='<div class="title"><h2>🏪 Painel do Comerciante</h2></div><p class="muted">Gerencie seu estabelecimento no CityJá.</p><div class="menuGrid">'+
  $('merchantContent').innerHTML='<div class="title"><h2>🏪 Painel do Comerciante</h2></div><p class="muted">Gerencie seu estabelecimento no CityJá.</p><div class="menuGrid">'+
  '<button class="menuItem" onclick="merchantRegister()"><b>🏪</b>Cadastrar loja<br><span class="muted">Publique seu estabelecimento</span></button>'+
  '<button class="menuItem" onclick="merchantEdit()"><b>✏️</b>Editar loja<br><span class="muted">Alterar informações</span></button>'+
