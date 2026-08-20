@@ -89,7 +89,7 @@ async function submitAuth(e){e.preventDefault();try{const body=authMode==='regis
 function updateProfile(u){$('pname').textContent=u.name;$('pemail').textContent=u.email;$('prole').textContent=u.role==='merchant'?'🏪 Comerciante':'👤 Usuário';$('profileAuth').style.display='none';$('logoutBtn').style.display='block';$('merchantBtn').style.display=u.role==='merchant'?'block':'none'}
 async function logout(){try{if(token)await api('/api/logout',{method:'POST'})}catch(e){}localStorage.removeItem('cityja_token');token=null;$('pname').textContent='Visitante';$('pemail').textContent='';$('prole').textContent='';$('profileAuth').style.display='block';$('logoutBtn').style.display='none';$('merchantBtn').style.display='none';go('home');toast('Você saiu da conta')}
 
-function merchantPanel(){
+async function merchantPanel(){
  if(!token){openAuth('login');return}
  if(!$('prole').textContent.includes('Comerciante')){
     try{
