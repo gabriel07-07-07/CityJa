@@ -90,6 +90,7 @@ function updateProfile(u){$('pname').textContent=u.name;$('pemail').textContent=
 async function logout(){try{if(token)await api('/api/logout',{method:'POST'})}catch(e){}localStorage.removeItem('cityja_token');token=null;$('pname').textContent='Visitante';$('pemail').textContent='';$('prole').textContent='';$('profileAuth').style.display='block';$('logoutBtn').style.display='none';$('merchantBtn').style.display='none';go('home');toast('Você saiu da conta')}
 
 async function merchantPanel(){
+ toast('Botão Cadastro funcionando!');
  if(!token){openAuth('login');return}
  if(!$('prole').textContent.includes('Comerciante')){
     try{
